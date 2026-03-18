@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPMO Service Design Assessment — Are Your Services Built for Adoption?</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#EFF2F7;--bg-warm:#ECE7E1;--teal:#0D8A8C;--teal-dark:#0B6D6E;--teal-text:#429090;--navy:#2C3F67;--title:#1A2338;--red:#C84042;--orange:#E19041;--purple:#7B4B94;--body:#3C4555;--card:#fff;--border:#E2E8F0;--quote:#E8F5F2;--font-d:'Fraunces',serif;--font-b:'DM Sans',sans-serif}
+body{font-family:var(--font-b);background:var(--bg);color:var(--body);line-height:1.6;min-height:100vh}
+.top-bar{height:5px;background:var(--teal);position:fixed;top:0;left:0;right:0;z-index:100}
+.progress{position:fixed;top:5px;left:0;height:3px;background:var(--orange);transition:width .4s;z-index:99}
+.container{max-width:720px;margin:0 auto;padding:60px 24px 40px}
+.hero{background:var(--bg-warm);border-radius:16px;padding:48px 40px;position:relative;overflow:hidden;margin-bottom:32px}
+.hero::before{content:'';position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:#E2D9D0}
+.hero::after{content:'';position:absolute;right:-30px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:#D5DED9}
+.hero-label{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-bottom:12px;position:relative;z-index:1}
+.hero h1{font-family:var(--font-d);font-size:30px;font-weight:700;color:var(--title);line-height:1.2;margin-bottom:8px;position:relative;z-index:1}
+.hero-line{width:60px;height:4px;background:var(--orange);border-radius:2px;margin:16px 0;position:relative;z-index:1}
+.hero p{font-size:14px;color:var(--body);max-width:440px;position:relative;z-index:1}
+.btn{font-family:var(--font-b);font-size:14px;font-weight:600;padding:10px 24px;border-radius:8px;border:none;cursor:pointer;transition:all .2s}
+.btn-next{background:var(--teal);color:#fff}.btn-next:hover{background:var(--teal-dark)}.btn-next:disabled{opacity:.4;cursor:not-allowed}
+.btn-back{background:transparent;color:var(--body);border:1px solid var(--border)}.btn-back:hover{border-color:var(--body)}
+.btn-restart{background:#fff;color:var(--teal-dark);margin-top:16px;font-weight:700}.btn-restart:hover{background:#f0f0f0}
+.q-section{display:none}.q-section.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-counter{font-size:12px;font-weight:500;color:var(--teal-text);letter-spacing:1px;margin-bottom:8px}
+.q-card{background:var(--card);border-radius:12px;padding:32px;margin-bottom:16px;border:1px solid var(--border)}
+.q-card h2{font-family:var(--font-d);font-size:20px;font-weight:600;color:var(--title);margin-bottom:6px;line-height:1.3}
+.q-dim{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:16px}
+.q-dim.design{background:#FDE8E8;color:var(--red)}.q-dim.approach{background:#FDF0E0;color:var(--orange)}.q-dim.adoption{background:#E0F5F5;color:var(--teal)}.q-dim.value{background:#E8EBF4;color:var(--navy)}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;background:var(--card)}
+.option:hover{border-color:var(--teal);background:#F0FAFA}.option.selected{border-color:var(--teal);background:#E6F5F5}
+.option-marker{width:28px;height:28px;min-width:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--body);transition:all .2s;margin-top:1px}
+.option.selected .option-marker{background:var(--teal);border-color:var(--teal);color:#fff}
+.option-label{font-size:14px;font-weight:500;color:var(--title);line-height:1.45}
+.option-label small{display:block;font-size:12px;font-weight:400;color:var(--body);margin-top:2px}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.results{display:none}.results.active{display:block;animation:fadeIn .5s ease}
+.result-hero{background:var(--bg-warm);border-radius:16px;padding:40px;text-align:center;position:relative;overflow:hidden;margin-bottom:24px}
+.result-hero::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:#E2D9D0}
+.result-hero::after{content:'';position:absolute;left:-40px;bottom:-40px;width:160px;height:160px;border-radius:50%;background:#D5DED9}
+.result-badge{display:inline-flex;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:16px;position:relative;z-index:1}
+.result-badge.red{background:#FDE8E8;color:var(--red)}.result-badge.orange{background:#FDF0E0;color:var(--orange)}.result-badge.teal{background:#E0F5F5;color:var(--teal-dark)}
+.result-title{font-family:var(--font-d);font-size:28px;font-weight:700;color:var(--title);margin-bottom:8px;position:relative;z-index:1}
+.result-sub{font-size:15px;color:var(--body);position:relative;z-index:1;max-width:500px;margin:0 auto}
+.dim-card{background:var(--card);border-radius:12px;padding:20px 24px;margin-bottom:12px;border:1px solid var(--border)}
+.dim-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.dim-name{font-size:14px;font-weight:700;color:var(--title)}
+.dim-tag{font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px}
+.dim-tag.red{background:#FDE8E8;color:var(--red)}.dim-tag.orange{background:#FDF0E0;color:#B37520}.dim-tag.teal{background:#E0F5F5;color:var(--teal-dark)}
+.dim-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.dim-fill{height:100%;border-radius:4px;transition:width .8s}
+.dim-fill.design{background:var(--red)}.dim-fill.approach{background:var(--orange)}.dim-fill.adoption{background:var(--teal)}.dim-fill.value{background:var(--navy)}
+.dim-insight{font-size:12.5px;color:var(--body);padding-left:12px;border-left:3px solid var(--border);line-height:1.5}
+.recs{background:var(--card);border-radius:12px;padding:28px;margin-top:20px;border:1px solid var(--border)}
+.recs h3{font-family:var(--font-d);font-size:18px;font-weight:600;color:var(--title);margin-bottom:16px}
+.rec{display:flex;gap:12px;margin-bottom:14px}.rec-arrow{color:var(--teal);font-weight:700;font-size:16px;margin-top:1px}
+.rec-text{font-size:13.5px;line-height:1.55}.rec-text strong{color:var(--title)}
+.cta{background:linear-gradient(135deg,var(--teal-dark),var(--teal));border-radius:12px;padding:28px;margin-top:24px;color:#fff;text-align:center}
+.cta h3{font-family:var(--font-d);font-size:18px;font-weight:600;margin-bottom:6px}.cta p{font-size:13px;opacity:.85}
+.footer{text-align:center;padding:32px 0;font-size:12px;color:var(--teal-text)}
+@media(max-width:600px){.container{padding:50px 16px 32px}.hero{padding:32px 24px}.hero h1{font-size:24px}.q-card{padding:24px}}
+</style>
+</head>
+<body>
+<div class="top-bar"></div>
+<div class="progress" id="prog" style="width:0%"></div>
+<div class="container">
+  <div class="hero" id="hero">
+    <div class="hero-label">EPMO Series · Part 4 · Assessment</div>
+    <h1>EPMO Service Design<br>Assessment</h1>
+    <div class="hero-line"></div>
+    <p>8 questions across 4 dimensions: Service Design, Approach Tailoring, Adoption, and Value Measurement. Find out if your EPMO services are built for use or built for shelf life.</p>
+    <div style="margin-top:24px"><button class="btn btn-next" onclick="start()">Start the Assessment →</button></div>
+  </div>
+  <div id="quiz"></div>
+  <div class="results" id="res"></div>
+  <div class="footer">Thamer AlMujalli · PMO-CP · PMI-CP · PMP · P6<br>Based on PMI PMO Practice Guide (2025)</div>
+</div>
+<script>
+const Qs=[
+{dim:"Design",cls:"design",q:"How were your EPMO services selected?",opts:[
+{t:"We inherited the PMO's existing services and scaled them up",d:"No redesign for enterprise scope",s:1},{t:"We surveyed stakeholders but mostly built what we thought was needed",d:"Partial needs assessment",s:2},{t:"We ran a structured needs assessment across all BUs and designed services based on customer outcomes",d:"Customer-driven design",s:3}]},
+{dim:"Design",cls:"design",q:"Do your services cover strategic, tactical, and operational categories?",opts:[
+{t:"We mostly do operational work: reporting, templates, status tracking",d:"Operational only",s:1},{t:"We cover operational and some tactical, but strategic services are limited",d:"Missing strategic layer",s:2},{t:"We deliberately balance all three categories based on what each BU needs",d:"Full-spectrum coverage",s:3}]},
+{dim:"Approach",cls:"approach",q:"Do you use different service approaches for different business units?",opts:[
+{t:"No: same approach for everyone across the organization",d:"One-size-fits-all",s:1},{t:"We informally adapt, but there is no structured approach differentiation",d:"Ad hoc tailoring",s:2},{t:"Yes: we deliberately match the approach (consultative, directive, managed) to each BU's maturity",d:"Structured approach matching",s:3}]},
+{dim:"Approach",cls:"approach",q:"When a high-maturity team pushes back on your services, what happens?",opts:[
+{t:"We enforce the standard anyway: compliance is the goal",d:"Compliance over adoption",s:1},{t:"We back off and let them do their own thing",d:"Abandonment",s:2},{t:"We shift to a consultative approach: advise and support rather than direct",d:"Approach adaptation",s:3}]},
+{dim:"Adoption",cls:"adoption",q:"How are new EPMO services introduced to business units?",opts:[
+{t:"We announce them via email and expect adoption",d:"Push without change management",s:1},{t:"We run training sessions, but adoption is uneven",d:"Training without sustained support",s:2},{t:"We deploy with a change management plan: communication, training, coaching, and feedback loops",d:"Structured deployment",s:3}]},
+{dim:"Adoption",cls:"adoption",q:"What percentage of your EPMO's services are actively used by customers?",opts:[
+{t:"Less than half: many services exist on paper but nobody uses them",d:"Low adoption",s:1},{t:"About half are used regularly; the rest are underutilized",d:"Partial adoption",s:2},{t:"Most services are actively used and regularly requested by customers",d:"High adoption",s:3}]},
+{dim:"Value",cls:"value",q:"How does the EPMO measure service effectiveness?",opts:[
+{t:"We don't: we track activity (number of reports generated, training sessions held)",d:"Activity metrics only",s:1},{t:"We measure some customer satisfaction, but not service-level outcomes",d:"Partial measurement",s:2},{t:"Each service has defined KPIs tied to customer outcomes, reviewed at governance cadence",d:"Outcome-based measurement",s:3}]},
+{dim:"Value",cls:"value",q:"Do customers see the EPMO as a value provider or as overhead?",opts:[
+{t:"Overhead: most BUs view us as bureaucracy they have to comply with",d:"Perceived as overhead",s:1},{t:"Mixed: some BUs see value, others see us as a cost center",d:"Inconsistent perception",s:2},{t:"Value provider: BUs actively request our services and advocate for our role",d:"Recognized value partner",s:3}]},
+];
+const dims=["Design","Approach","Adoption","Value"];
+let ans=new Array(Qs.length).fill(null);
+function start(){document.getElementById('hero').style.display='none';render(0)}
+function render(i){document.getElementById('prog').style.width=((i)/Qs.length*100)+'%';const q=Qs[i],t=Qs.length;
+document.getElementById('quiz').innerHTML=`<div class="q-section active"><div class="q-counter">QUESTION ${i+1} OF ${t}</div>
+<div class="q-card"><span class="q-dim ${q.cls}">${q.dim}</span><h2>${q.q}</h2>
+<div class="options">${q.opts.map((o,oi)=>`<div class="option ${ans[i]===oi?'selected':''}" onclick="sel(${i},${oi})">
+<div class="option-marker">${String.fromCharCode(65+oi)}</div><div class="option-label">${o.t}<small>${o.d}</small></div></div>`).join('')}</div></div>
+<div class="nav-row"><button class="btn btn-back" onclick="${i>0?`render(${i-1})`:'back()'}">${i===0?'← Back to Start':'← Back'}</button>
+${i<t-1?`<button class="btn btn-next" onclick="render(${i+1})" ${ans[i]===null?'disabled':''}>Next →</button>`
+:`<button class="btn btn-next" onclick="results()" ${ans[i]===null?'disabled':''}>See Results →</button>`}</div></div>`}
+function sel(qi,oi){ans[qi]=oi;render(qi)}
+function back(){document.getElementById('hero').style.display='block';document.getElementById('quiz').innerHTML='';document.getElementById('prog').style.width='0%'}
+function results(){
+document.getElementById('quiz').innerHTML='';document.getElementById('prog').style.width='100%';
+const ds={};dims.forEach(d=>ds[d]={t:0,n:0});
+Qs.forEach((q,i)=>{if(ans[i]!==null){ds[q.dim].t+=q.opts[ans[i]].s;ds[q.dim].n++}});
+const total=Object.values(ds).reduce((s,d)=>s+d.t,0),max=Qs.length*3,pct=Math.round(total/max*100);
+let lv,lt,ld;
+if(pct<=40){lv='red';lt='Built for Compliance';ld='Your EPMO services are designed around what the PMO thinks is needed, not what customers asked for. The result: low adoption, high resistance, and a perception of overhead.';}
+else if(pct<=70){lv='orange';lt='Partially Adopted';ld='Some services are landing, but the approach isn\'t consistently tailored to customer maturity. Key services are underutilized because the deployment model doesn\'t match the audience.';}
+else{lv='teal';lt='Built for Adoption';ld='Your EPMO services are customer-driven, approach-matched, and actively used. Focus on closing remaining gaps and systematizing value measurement.';}
+const insights={
+Design:{1:"Services were inherited, not designed. Run a structured needs assessment across all BUs: what outcomes do they need, not what services do you have.",2:"Needs were partially assessed but design gaps remain. Ensure all three service categories (strategic, tactical, operational) are covered based on demand.",3:"Strong customer-driven design. Ensure services evolve: reassess needs annually as BU maturity changes."},
+Approach:{1:"One approach for everyone guarantees rejection by high-maturity teams and overwhelm for low-maturity ones. Map each BU's maturity and match the approach.",2:"Informal tailoring is better than none, but inconsistency erodes trust. Formalize the approach-matching framework: document which approach applies where and why.",3:"Structured approach matching is in place. Monitor for maturity shifts: a BU that needed directive support last year may be ready for consultative this year."},
+Adoption:{1:"Push-without-change-management is why services sit unused. Every service launch needs a deployment plan: stakeholder communication, training, coaching, and a feedback loop.",2:"Training alone doesn't sustain adoption. Add ongoing coaching, embed champions in each BU, and create feedback loops to catch adoption barriers early.",3:"High adoption achieved. Protect it by maintaining feedback loops and adjusting services based on usage data."},
+Value:{1:"If you only track activity, you can't prove value. Define outcome-based KPIs for each service tied to what customers care about: time saved, risk reduced, decisions improved.",2:"Satisfaction data is a start, but it doesn't prove business impact. Connect service KPIs to portfolio-level outcomes that governance boards care about.",3:"Outcome-based measurement is operational. Ensure results are communicated to stakeholders: value delivered but not perceived is value wasted."}
+};
+const dimAvgs=dims.map(d=>({dim:d,avg:ds[d].n>0?ds[d].t/ds[d].n:0})).sort((a,b)=>a.avg-b.avg);
+const recs=[];
+if(lv==='red'){recs.push({s:"Redesign from demand, not supply.",t:"Survey your BU leaders on outcomes they need. Design services around those outcomes, not around what the PMO already has."});recs.push({s:`Fix ${dimAvgs[0].dim.toLowerCase()} first.`,t:"Your weakest dimension is the biggest barrier to adoption."});recs.push({s:"Read the 6 approaches.",t:"Slide 4 of the Part 4 carousel shows how to match the delivery style to each BU's maturity. Wrong match = rejection."});}
+else if(lv==='orange'){recs.push({s:"Formalize approach matching.",t:`Your weakest area is ${dimAvgs[0].dim.toLowerCase()}. Document which approach applies to which BU and why.`});recs.push({s:"Deploy with change management.",t:"Every new service needs a deployment plan: not just training, but stakeholder communication, coaching, and feedback loops."});recs.push({s:"Measure outcomes, not activity.",t:"Shift from tracking reports generated to tracking decisions improved, risks mitigated, and time saved."});}
+else{recs.push({s:"Systematize what works.",t:"Document your approach-matching framework so it survives team changes and leadership transitions."});recs.push({s:`Even here, watch ${dimAvgs[0].dim.toLowerCase()}.`,t:"Small gaps compound across multiple BUs at enterprise scale."});recs.push({s:"Part 5 is next.",t:"Your services are operational. Part 5 explores how EPMO service design connects to Vision 2030 delivery."});}
+document.getElementById('res').innerHTML=`
+<div class="result-hero"><span class="result-badge ${lv}">YOUR SERVICE DESIGN</span>
+<div class="result-title">${lt}</div><div class="result-sub">${ld}</div>
+<div style="font-family:var(--font-d);font-size:36px;font-weight:700;color:var(--title);margin-top:16px;position:relative;z-index:1">${pct}%</div>
+<div style="font-size:12px;color:var(--body);position:relative;z-index:1">${total} / ${max} points</div></div>
+<h3 style="font-family:var(--font-d);font-size:18px;color:var(--title);margin-bottom:16px">Breakdown by Dimension</h3>
+${dims.map(dim=>{const d=ds[dim],avg=d.n>0?d.t/d.n:0,bp=Math.round(avg/3*100),dl=avg<=1.5?'red':avg<=2.3?'orange':'teal',dt=avg<=1.5?'Weak':avg<=2.3?'Developing':'Strong',ik=avg<=1.5?1:avg<=2.3?2:3;
+return`<div class="dim-card"><div class="dim-head"><span class="dim-name">${dim}</span><span class="dim-tag ${dl}">${dt}</span></div>
+<div class="dim-bar"><div class="dim-fill ${dim.toLowerCase()}" style="width:${bp}%"></div></div>
+<div class="dim-insight">${insights[dim][ik]}</div></div>`}).join('')}
+<div class="recs"><h3>What to Do Next</h3>${recs.map(r=>`<div class="rec"><span class="rec-arrow">→</span><div class="rec-text"><strong>${r.s}</strong> ${r.t}</div></div>`).join('')}</div>
+<div class="cta"><h3>EPMO Series by Thamer AlMujalli</h3><p>This assessment accompanies Part 4: Designing EPMO Services That Actually Get Used</p>
+<button class="btn btn-restart" onclick="restart()">Take Again</button></div>`;
+document.getElementById('res').classList.add('active')}
+function restart(){ans=new Array(Qs.length).fill(null);document.getElementById('res').classList.remove('active');document.getElementById('res').innerHTML='';document.getElementById('hero').style.display='block';document.getElementById('prog').style.width='0%';window.scrollTo(0,0)}
+</script>
+</body>
+</html>
